@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiTienda - Carrito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f5f5', 100: '#e5e5e5', 200: '#d4d4d4',
+                            300: '#a3a3a3', 400: '#737373', 500: '#525252',
+                            600: '#404040', 700: '#262626', 800: '#171717',
+                            900: '#000000'
+                        },
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-neutral-100 text-neutral-900">
+
+    <!-- ================= NAVBAR DESKTOP ================= -->
+    <nav id="navbar-scroll" 
+         class="hidden md:block fixed top-0 left-0 right-0 bg-black shadow-lg z-50 transform transition-transform duration-300 ease-in-out">
+        
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4">
+            <div class="relative">
+                <input type="text" 
+                       placeholder="Buscar productos..." 
+                       class="w-full pl-10 pr-4 py-2 bg-neutral-800 text-white placeholder-neutral-400 border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" 
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between px-6 py-3 relative">
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="index.html" class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Inicio
+                </a>
+                <a href="productos.html" class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Catálogo
+                </a>
+            </div>
+            <div class="w-10 flex-shrink-0"></div>
+            <a href="carrito.html" class="relative p-2 bg-neutral-600 text-white rounded-lg transition flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span id="cart-count-nav" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Botón hamburguesa mobile -->
+    <button id="menu-toggle" class="md:hidden fixed top-4 right-4 bg-black/80 backdrop-blur-sm text-white p-2 rounded-lg transition z-50">
+        <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+
+    <!-- ================= HEADER ================= -->
+    <section class="bg-black text-white pt-20 md:pt-24 pb-8">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl md:text-4xl font-bold">Tu Carrito</h1>
+            <p class="text-neutral-400 mt-2" id="cart-subtitle">0 productos en tu carrito</p>
+        </div>
+    </section>
+
+    <!-- ================= CONTENIDO ================= -->
+    <div class="container mx-auto px-4 py-8">
+        
+        <!-- Carrito vacío -->
+        <div id="empty-cart" class="hidden text-center py-16">
+            <div class="text-7xl mb-4">🛒</div>
+            <h2 class="text-2xl font-bold mb-2">Tu carrito está vacío</h2>
+            <p class="text-neutral-600 mb-6">Agregá productos para empezar a comprar</p>
+            <a href="productos.html" class="inline-block bg-black text-white font-bold px-8 py-3 rounded-lg hover:bg-neutral-800 transition">
+                Ver productos
+            </a>
+        </div>
+
+        <!-- Carrito con productos -->
+        <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Lista de productos -->
+            <div class="lg:col-span-2 space-y-4">
+                <div id="cart-items"></div>
+
+                <!-- Cupón -->
+                <div class="bg-white rounded-lg shadow p-4 mt-6">
+                    <h3 class="font-bold mb-3">¿Tenés un cupón de descuento?</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="coupon-input" placeholder="Ingresá tu código" 
+                               class="flex-1 px-4 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        <button id="apply-coupon" class="bg-neutral-800 hover:bg-neutral-600 text-white px-6 py-2 rounded-lg font-semibold transition">
+                            Aplicar
+                        </button>
+                    </div>
+                    <p id="coupon-message" class="text-sm mt-2 hidden"></p>
+                </div>
+
+                <!-- Seguir comprando -->
+                <a href="productos.html" class="inline-flex items-center gap-2 text-neutral-700 hover:text-black font-semibold mt-4">
+                    ← Seguir comprando
+                </a>
+            </div>
+
+            <!-- Resumen -->
+            <aside class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow p-6 sticky top-24">
+                    <h2 class="text-xl font-bold mb-6 pb-4 border-b">Resumen del pedido</h2>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-600">Subtotal</span>
+                            <span class="font-semibold" id="subtotal">$0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-neutral-600">Envío</span>
+                            <span class="font-semibold text-green-600" id="shipping">Gratis</span>
+                        </div>
+                        <div id="discount-row" class="flex justify-between hidden">
+                            <span class="text-neutral-600">Descuento</span>
+                            <span class="font-semibold text-green-600" id="discount">-$0</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t mb-6">
+                        <span class="text-lg font-bold">Total</span>
+                        <span class="text-2xl font-bold text-black" id="total">$0</span>
+                    </div>
+
+                    <button id="checkout-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-4 rounded-lg transition mb-3">
+                        Proceder al pago
+                    </button>
+
+                    <div class="text-center text-xs text-neutral-500 space-y-1">
+                        <p>🔒 Pago 100% seguro</p>
+                        <p>Envío gratis en compras +$50</p>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- ================= DRAWER MOBILE ================= -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+    <div id="drawer" class="fixed top-0 right-0 h-full w-72 bg-neutral-900 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden overflow-y-auto">
+        <div class="bg-black text-white p-6 sticky top-0 z-10">
+            <h2 class="text-xl font-bold">Menú</h2>
+        </div>
+        <div class="p-4">
+            <a href="index.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">🏠</span><span class="font-semibold">Inicio</span>
+            </a>
+            <a href="productos.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">📦</span><span class="font-semibold">Catálogo</span>
+            </a>
+            <a href="carrito.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">🛒</span><span class="font-semibold">Carrito</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="js/cart.js"></script>
+    <script src="js/carrito.js"></script>
+</body>
+</html>

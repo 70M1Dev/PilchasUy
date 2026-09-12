@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiTienda - Producto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f5f5', 100: '#e5e5e5', 200: '#d4d4d4',
+                            300: '#a3a3a3', 400: '#737373', 500: '#525252',
+                            600: '#404040', 700: '#262626', 800: '#171717',
+                            900: '#000000'
+                        },
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-neutral-100 text-neutral-900">
+
+    <!-- ================= NAVBAR DESKTOP ================= -->
+    <nav id="navbar-scroll" 
+         class="hidden md:block fixed top-0 left-0 right-0 bg-black shadow-lg z-50 transform transition-transform duration-300 ease-in-out">
+        
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4">
+            <div class="relative">
+                <input type="text" 
+                       placeholder="Buscar productos..." 
+                       class="w-full pl-10 pr-4 py-2 bg-neutral-800 text-white placeholder-neutral-400 border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" 
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between px-6 py-3 relative">
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="index.html" class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Inicio
+                </a>
+                <a href="productos.html" class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Catálogo
+                </a>
+            </div>
+            <div class="w-10 flex-shrink-0"></div>
+            <a href="carrito.html" class="relative p-2 bg-neutral-800 hover:bg-neutral-600 rounded-lg transition flex-shrink-0 block">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span id="cart-count-nav" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ================= BOTÓN HAMBURGUESA MOBILE ================= -->
+    <button id="menu-toggle" 
+            class="md:hidden fixed top-4 right-4 bg-black/80 backdrop-blur-sm text-white p-2 rounded-lg transition z-50">
+        <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+
+    <!-- ================= BREADCRUMB ================= -->
+    <div class="container mx-auto px-4 pt-24 md:pt-20 pb-4">
+        <nav class="text-sm text-neutral-600 flex items-center gap-2 flex-wrap">
+            <a href="index.html" class="hover:text-black">Inicio</a>
+            <span>›</span>
+            <a href="productos.html" class="hover:text-black">Catálogo</a>
+            <span>›</span>
+            <span class="text-black font-semibold" id="breadcrumb-category">Remeras</span>
+        </nav>
+    </div>
+
+    <!-- ================= PRODUCTO ================= -->
+    <div class="container mx-auto px-4 pb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+            
+            <!-- ================= GALERÍA ================= -->
+            <div class="md:sticky md:top-24 md:self-start">
+                
+                <!-- Imagen principal -->
+                <div class="relative bg-white rounded-xl overflow-hidden shadow-lg mb-4 group">
+                    <div id="gallery-main" class="overflow-hidden">
+                        <div id="gallery-track" class="flex transition-transform duration-500 ease-out">
+                            <!-- Las imágenes se cargan con JS -->
+                        </div>
+                    </div>
+
+                    <!-- Flechas navegación desktop -->
+                    <button id="prev-btn" 
+                            class="hidden md:flex absolute top-1/2 left-3 -translate-y-1/2 bg-white/90 hover:bg-white text-black w-10 h-10 rounded-full items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <button id="next-btn" 
+                            class="hidden md:flex absolute top-1/2 right-3 -translate-y-1/2 bg-white/90 hover:bg-white text-black w-10 h-10 rounded-full items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+
+                    <!-- Indicadores (puntitos) -->
+                    <div id="gallery-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                        <!-- Se generan con JS -->
+                    </div>
+
+                    <!-- Badge -->
+                    <span id="product-badge" class="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded hidden">
+                        -20%
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- ================= INFO DEL PRODUCTO ================= -->
+            <div>
+                
+                <!-- Categoría -->
+                <p class="text-xs text-neutral-500 uppercase tracking-wider mb-2" id="product-category">
+                    Remeras
+                </p>
+
+                <!-- Título -->
+                <h1 class="text-3xl md:text-4xl font-bold mb-3 text-black" id="product-name">
+                    Cargando...
+                </h1>
+
+                <!-- Rating -->
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="flex text-amber-400">
+                        <span>★</span><span>★</span><span>★</span><span>★</span><span class="text-neutral-300">★</span>
+                    </div>
+                    <span class="text-sm text-neutral-600">(4.0) · 23 reseñas</span>
+                </div>
+
+                <!-- Precio -->
+                <div class="flex items-baseline gap-3 mb-6">
+                    <span class="text-4xl font-bold text-black" id="product-price">$0</span>
+                    <span class="text-xl text-neutral-400 line-through hidden" id="product-original-price">$0</span>
+                    <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded hidden" id="product-discount">-20%</span>
+                </div>
+
+                <!-- Cuotas -->
+                <p class="text-sm text-neutral-600 mb-6">
+                    O en <span class="font-bold text-black">3 cuotas sin interés de $<span id="product-installment">0</span></span>
+                </p>
+
+                <!-- Descripción -->
+                <div class="mb-6 pb-6 border-b">
+                    <p class="text-neutral-700 leading-relaxed" id="product-description">
+                        Cargando descripción...
+                    </p>
+                </div>
+
+                <!-- Talles -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-sm uppercase tracking-wider">Talle</h3>
+                        <button class="text-sm text-neutral-600 hover:text-black underline">
+                            Guía de talles
+                        </button>
+                    </div>
+                    <div id="size-selector" class="grid grid-cols-5 gap-2">
+                        <!-- Se generan con JS -->
+                    </div>
+                    <p id="size-error" class="text-red-500 text-sm mt-2 hidden">
+                        ⚠️ Por favor seleccioná un talle
+                    </p>
+                </div>
+
+                <!-- Color (opcional) -->
+                <div class="mb-6">
+                    <h3 class="font-bold text-sm uppercase tracking-wider mb-3">Color</h3>
+                    <div class="flex gap-2">
+                        <button class="w-10 h-10 rounded-full bg-black border-2 border-neutral-300 hover:border-black transition ring-offset-2" title="Negro"></button>
+                        <button class="w-10 h-10 rounded-full bg-white border-2 border-neutral-300 hover:border-black transition" title="Blanco"></button>
+                        <button class="w-10 h-10 rounded-full bg-neutral-500 border-2 border-neutral-300 hover:border-black transition" title="Gris"></button>
+                    </div>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="mb-6">
+                    <h3 class="font-bold text-sm uppercase tracking-wider mb-3">Cantidad</h3>
+                    <div class="flex items-center gap-3">
+                        <button id="qty-minus" class="w-10 h-10 bg-neutral-200 hover:bg-neutral-300 rounded-lg font-bold transition">−</button>
+                        <input type="number" id="quantity" value="1" min="1" max="10" 
+                               class="w-16 h-10 text-center border border-neutral-300 rounded-lg font-bold focus:outline-none focus:ring-2 focus:ring-black">
+                        <button id="qty-plus" class="w-10 h-10 bg-neutral-200 hover:bg-neutral-300 rounded-lg font-bold transition">+</button>
+                    </div>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="flex flex-col sm:flex-row gap-3 mb-6">
+                    <button id="add-to-cart-btn" 
+                            class="flex-1 bg-neutral-800 hover:bg-neutral-600 text-white font-bold py-4 rounded-lg transition flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        Añadir al carrito
+                    </button>
+                    <button id="buy-now-btn" 
+                            class="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold py-4 rounded-lg transition">
+                        Comprar ahora
+                    </button>
+                </div>
+
+                <!-- Envío -->
+                <div class="bg-white rounded-lg p-4 mb-4 border border-neutral-200">
+                    <div class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-neutral-700 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+                        </svg>
+                        <div>
+                            <p class="font-bold text-sm">Envío gratis</p>
+                            <p class="text-sm text-neutral-600">Llega en 3-5 días hábiles</p>
+                            <button class="text-sm text-black underline mt-1">Calcular envío</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beneficios -->
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div class="bg-neutral-100 rounded-lg p-3">
+                        <div class="text-2xl mb-1">🔒</div>
+                        <p class="font-semibold">Pago seguro</p>
+                    </div>
+                    <div class="bg-neutral-100 rounded-lg p-3">
+                        <div class="text-2xl mb-1">↩️</div>
+                        <p class="font-semibold">30 días para devolver</p>
+                    </div>
+                    <div class="bg-neutral-100 rounded-lg p-3">
+                        <div class="text-2xl mb-1">✓</div>
+                        <p class="font-semibold">Producto original</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================= PRODUCTOS RELACIONADOS ================= -->
+        <section class="mt-16">
+            <h2 class="text-2xl font-bold mb-6">También te puede interesar</h2>
+            <div id="related-products" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Se cargan con JS -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ================= DRAWER MOBILE ================= -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+    <div id="drawer" class="fixed top-0 right-0 h-full w-72 bg-neutral-900 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden overflow-y-auto">
+        <div class="bg-black text-white p-6 sticky top-0 z-10">
+            <h2 class="text-xl font-bold">Menú</h2>
+        </div>
+        <div class="p-4">
+            <a href="index.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">🏠</span>
+                <span class="font-semibold">Inicio</span>
+            </a>
+            <a href="productos.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">📦</span>
+                <span class="font-semibold">Catálogo</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script src="js/config.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/producto.js"></script>
+</body>
+</html>

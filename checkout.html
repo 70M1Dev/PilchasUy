@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiTienda - Checkout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f5f5', 100: '#e5e5e5', 200: '#d4d4d4',
+                            300: '#a3a3a3', 400: '#737373', 500: '#525252',
+                            600: '#404040', 700: '#262626', 800: '#171717',
+                            900: '#000000'
+                        },
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-neutral-100 text-neutral-900">
+
+    <!-- ================= NAVBAR SIMPLE ================= -->
+    <nav class="fixed top-0 left-0 right-0 bg-black shadow-lg z-50">
+        <div class="flex items-center justify-between px-6 py-3">
+            <a href="index.html" class="text-xl font-bold text-white">MiTienda</a>
+            <a href="carrito.html" class="text-white text-sm hover:underline">← Volver al carrito</a>
+        </div>
+    </nav>
+
+    <!-- ================= PASOS ================= -->
+    <section class="bg-black text-white pt-20 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center gap-2 md:gap-4 text-sm md:text-base">
+                <div class="flex items-center gap-2 opacity-50">
+                    <span class="w-8 h-8 rounded-full bg-neutral-700 text-white flex items-center justify-center font-bold">1</span>
+                    <span class="hidden md:inline">Carrito</span>
+                </div>
+                <span class="opacity-50">›</span>
+                <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-full bg-amber-500 text-black flex items-center justify-center font-bold">2</span>
+                    <span class="font-bold">Checkout</span>
+                </div>
+                <span class="opacity-50">›</span>
+                <div class="flex items-center gap-2 opacity-50">
+                    <span class="w-8 h-8 rounded-full bg-neutral-700 text-white flex items-center justify-center font-bold">3</span>
+                    <span class="hidden md:inline">Confirmación</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= CHECKOUT ================= -->
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8">Finalizar compra</h1>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Formularios -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Contacto -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold mb-4">Información de contacto</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Email *</label>
+                            <input type="email" id="email" required placeholder="tu@email.com"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Teléfono *</label>
+                            <input type="tel" id="phone" required placeholder="+54 11 1234-5678"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envío -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold mb-4">Dirección de envío</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Nombre *</label>
+                            <input type="text" id="first-name" required
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Apellido *</label>
+                            <input type="text" id="last-name" required
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold mb-2">DNI / CUIT *</label>
+                            <input type="text" id="dni" required placeholder="Sin puntos ni guiones"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold mb-2">Calle y número *</label>
+                            <input type="text" id="address" required placeholder="Av. Corrientes 1234"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Piso / Depto</label>
+                            <input type="text" id="apartment"
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Código postal *</label>
+                            <input type="text" id="zipcode" required
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Provincia *</label>
+                            <select id="state" required
+                                    class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                                <option value="">Seleccioná...</option>
+                                <option>Buenos Aires</option>
+                                <option>CABA</option>
+                                <option>Córdoba</option>
+                                <option>Santa Fe</option>
+                                <option>Mendoza</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Ciudad *</label>
+                            <input type="text" id="city" required
+                                   class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold mb-2">Notas para el envío (opcional)</label>
+                            <textarea id="notes" rows="2" placeholder="Ej: Tocar timbre 2B"
+                                      class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pago -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold mb-4">Método de pago</h2>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 p-4 border-2 border-neutral-200 rounded-lg cursor-pointer hover:border-black transition payment-option">
+                            <input type="radio" name="payment" value="mercadopago" checked class="mt-1 accent-black">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold">Mercado Pago</span>
+                                    <span class="bg-blue-500 text-white text-xs px-2 py-0.5 rounded">Recomendado</span>
+                                </div>
+                                <p class="text-sm text-neutral-600 mt-1">Tarjeta, débito, efectivo o dinero en cuenta</p>
+                            </div>
+                            <div class="text-2xl">💳</div>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-4 border-2 border-neutral-200 rounded-lg cursor-pointer hover:border-black transition payment-option">
+                            <input type="radio" name="payment" value="transfer" class="mt-1 accent-black">
+                            <div class="flex-1">
+                                <span class="font-bold">Transferencia bancaria</span>
+                                <p class="text-sm text-neutral-600 mt-1">10% de descuento adicional</p>
+                            </div>
+                            <div class="text-2xl">🏦</div>
+                        </label>
+
+                        <label class="flex items-start gap-3 p-4 border-2 border-neutral-200 rounded-lg cursor-pointer hover:border-black transition payment-option">
+                            <input type="radio" name="payment" value="cash" class="mt-1 accent-black">
+                            <div class="flex-1">
+                                <span class="font-bold">Efectivo (Rapipago / Pago Fácil)</span>
+                                <p class="text-sm text-neutral-600 mt-1">Generás un cupón y pagás en cualquier sucursal</p>
+                            </div>
+                            <div class="text-2xl">💵</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen -->
+            <aside class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow p-6 sticky top-24">
+                    <h2 class="text-xl font-bold mb-6 pb-4 border-b">Tu pedido</h2>
+                    
+                    <!-- Productos -->
+                    <div id="checkout-items" class="space-y-4 mb-6 max-h-64 overflow-y-auto">
+                        <!-- Se carga con JS -->
+                    </div>
+
+                    <!-- Totales -->
+                    <div class="space-y-3 mb-6 pt-4 border-t">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-neutral-600">Subtotal</span>
+                            <span class="font-semibold" id="checkout-subtotal">$0</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-neutral-600">Envío</span>
+                            <span class="font-semibold" id="checkout-shipping">Gratis</span>
+                        </div>
+                        <div id="checkout-discount-row" class="flex justify-between hidden">
+                            <span class="text-neutral-600">Descuento</span>
+                            <span class="font-semibold text-green-600" id="checkout-discount">-$0</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t">
+                        <span class="text-lg font-bold">Total</span>
+                        <span class="text-2xl font-bold text-black" id="checkout-total">$0</span>
+                    </div>
+
+                    <button id="place-order-btn"
+                            class="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-4 rounded-lg transition mb-6">
+                        Confirmar y pagar
+                    </button>
+
+                    <div class="text-center text-xs text-neutral-500 space-y-1">
+                        <p>🔒 Pago 100% seguro</p>
+                        <p>Envío gratis en compras +$50</p>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- ================= DRAWER MOBILE ================= -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+    <div id="drawer" class="fixed top-0 right-0 h-full w-72 bg-neutral-900 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden overflow-y-auto">
+        <div class="bg-black text-white p-6 sticky top-0 z-10">
+            <h2 class="text-xl font-bold">Menú</h2>
+        </div>
+        <div class="p-4">
+            <a href="index.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">🏠</span>
+                <span class="font-semibold">Inicio</span>
+            </a>
+            <a href="productos.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">📦</span>
+                <span class="font-semibold">Catálogo</span>
+            </a>
+            <a href="carrito.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition text-white">
+                <span class="text-xl">🛒</span>
+                <span class="font-semibold">Carrito</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script src="js/cart.js"></script>
+    <script src="js/checkout.js"></script>
+
+</body>
+</html>

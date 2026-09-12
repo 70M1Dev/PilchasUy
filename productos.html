@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiTienda - Catálogo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f5f5',
+                            100: '#e5e5e5',
+                            200: '#d4d4d4',
+                            300: '#a3a3a3',
+                            400: '#737373',
+                            500: '#525252',
+                            600: '#404040',
+                            700: '#262626',
+                            800: '#171717',
+                            900: '#000000'
+                        },
+                        accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-neutral-100 text-neutral-900">
+
+       <!-- ================= NAVBAR DESKTOP ================= -->
+    <nav id="navbar-scroll" 
+         class="hidden md:block fixed top-0 left-0 right-0 bg-black shadow-lg z-50 transform transition-transform duration-300 ease-in-out">
+        
+        <!-- Buscador centrado absoluto -->
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4">
+            <div class="relative">
+                <input type="text" 
+                       id="search-input"
+                       placeholder="Buscar productos..." 
+                       class="w-full pl-10 pr-4 py-2 bg-neutral-800 text-white placeholder-neutral-400 border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" 
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Contenedor flex normal -->
+        <div class="flex items-center justify-between px-6 py-3 relative">
+            
+            <!-- Botones de navegación (izquierda) -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="index.html" 
+                   class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Inicio
+                </a>
+                <a href="productos.html" 
+                   class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Catálogo
+                </a>
+            </div>
+
+            <!-- Spacer invisible para que el carrito se mantenga a la derecha -->
+            <div class="w-10 flex-shrink-0"></div>
+
+            <!-- Carrito (derecha) -->
+            <a href="carrito.html" class="relative p-2 bg-neutral-800 hover:bg-neutral-600 rounded-lg transition flex-shrink-0 block">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" 
+                     viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span id="cart-count-nav" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    0
+                </span>
+            </a>
+
+        </div>
+    </nav>
+
+    <!-- ================= HEADER ================= -->
+    <section class="bg-black text-white pt-20 md:pt-24 pb-8">
+        <div class="container mx-auto px-4">
+            
+            <!-- Botón mobile para abrir filtros -->
+            <div class="flex items-center justify-between mb-4 md:hidden">
+                <button id="filtros-toggle" 
+                        class="flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-lg transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" 
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+                    Filtros
+                </button>
+                <span class="text-sm text-neutral-400" id="products-count">24 productos</span>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-bold">Catálogo de Productos</h1>
+            <p class="text-neutral-400 mt-2 hidden md:block">Explorá toda nuestra colección</p>
+
+        </div>
+    </section>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex gap-6">
+            
+            <!-- ================= SIDEBAR FILTROS (Desktop) ================= -->
+            <aside class="hidden md:block w-64 flex-shrink-0">
+                <div class="bg-white rounded-lg shadow p-6 sticky top-24">
+                    
+                    <!-- Categorías -->
+                    <div class="mb-6">
+                        <h3 class="font-bold text-lg mb-4">Categorías</h3>
+                        <ul class="space-y-2">
+                            <li>
+                                <button class="category-btn w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-100 transition font-semibold text-black bg-neutral-100" 
+                                        data-category="all">
+                                    Todos los productos
+                                </button>
+                            </li>
+                            <li>
+                                <button class="category-btn w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-100 transition text-neutral-700" 
+                                        data-category="remeras">
+                                    👕 Remeras
+                                </button>
+                            </li>
+                            <li>
+                                <button class="category-btn w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-100 transition text-neutral-700" 
+                                        data-category="championes">
+                                    👟 Championes
+                                </button>
+                            </li>
+                            <li>
+                                <button class="category-btn w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-100 transition text-neutral-700" 
+                                        data-category="buzos">
+                                    🧥 Buzos
+                                </button>
+                            </li>
+                            <li>
+                                <button class="category-btn w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-100 transition text-neutral-700" 
+                                        data-category="pantalones">
+                                    👖 Pantalones
+                                </button>
+                            </li>
+                            <li>
+                                <button class="category-btn w-full text-left px-3 py-2 rounded-lg hover:bg-neutral-100 transition text-neutral-700" 
+                                        data-category="gorros">
+                                    🧢 Gorros
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Filtro de Precio -->
+                    <div class="mb-6 pb-6 border-b">
+                        <h3 class="font-bold text-lg mb-4">Precio</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="precio" value="all" checked class="accent-black">
+                                <span class="text-sm">Todos</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="precio" value="0-25" class="accent-black">
+                                <span class="text-sm">Menos de $25</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="precio" value="25-50" class="accent-black">
+                                <span class="text-sm">$25 - $50</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="precio" value="50-100" class="accent-black">
+                                <span class="text-sm">$50 - $100</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="precio" value="100+" class="accent-black">
+                                <span class="text-sm">Más de $100</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Ordenar -->
+                    <div>
+                        <h3 class="font-bold text-lg mb-4">Ordenar por</h3>
+                        <select id="sort-select" 
+                                class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black">
+                            <option value="default">Relevancia</option>
+                            <option value="price-asc">Precio: menor a mayor</option>
+                            <option value="price-desc">Precio: mayor a menor</option>
+                            <option value="name-asc">Nombre: A-Z</option>
+                            <option value="name-desc">Nombre: Z-A</option>
+                        </select>
+                    </div>
+
+                </div>
+            </aside>
+
+            <!-- ================= GRID DE PRODUCTOS ================= -->
+            <main class="flex-1">
+                
+                <!-- Loading -->
+                <div id="loading" class="text-center py-20 hidden">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
+                    <p class="mt-4 text-neutral-600">Cargando productos...</p>
+                </div>
+
+                <!-- Grid -->
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Los productos se cargan con JS -->
+                </div>
+
+                <!-- Sin resultados -->
+                <div id="no-results" class="hidden text-center py-20">
+                    <div class="text-6xl mb-4">😕</div>
+                    <h3 class="text-xl font-bold mb-2">No encontramos productos</h3>
+                    <p class="text-neutral-600">Probá con otros filtros</p>
+                </div>
+
+            </main>
+
+        </div>
+    </div>
+
+    <!-- ================= DRAWER FILTROS MOBILE ================= -->
+    <div id="drawer-overlay" 
+         class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity"></div>
+
+    <div id="filtros-drawer" 
+         class="fixed top-0 left-0 h-full w-72 bg-neutral-900 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden overflow-y-auto">
+        
+        <div class="bg-black text-white p-6 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h2 class="text-xl font-bold">Filtros</h2>
+                <p class="text-sm text-neutral-400">Refiná tu búsqueda</p>
+            </div>
+            <button id="close-filtros" class="text-white p-2 hover:bg-neutral-800 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
+                     viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-4">
+            
+            <!-- Categorías mobile -->
+            <div class="mb-6">
+                <h3 class="text-xs uppercase text-neutral-500 font-bold mb-3 tracking-wider">Categorías</h3>
+                <ul class="space-y-1">
+                    <li>
+                        <button class="category-btn-mobile w-full text-left px-3 py-3 rounded-lg bg-neutral-800 text-white font-semibold" 
+                                data-category="all">
+                            Todos los productos
+                        </button>
+                    </li>
+                    <li>
+                        <button class="category-btn-mobile w-full text-left px-3 py-3 rounded-lg hover:bg-neutral-800 text-white" 
+                                data-category="remeras">
+                            👕 Remeras
+                        </button>
+                    </li>
+                    <li>
+                        <button class="category-btn-mobile w-full text-left px-3 py-3 rounded-lg hover:bg-neutral-800 text-white" 
+                                data-category="championes">
+                            👟 Championes
+                        </button>
+                    </li>
+                    <li>
+                        <button class="category-btn-mobile w-full text-left px-3 py-3 rounded-lg hover:bg-neutral-800 text-white" 
+                                data-category="buzos">
+                            🧥 Buzos
+                        </button>
+                    </li>
+                    <li>
+                        <button class="category-btn-mobile w-full text-left px-3 py-3 rounded-lg hover:bg-neutral-800 text-white" 
+                                data-category="pantalones">
+                            👖 Pantalones
+                        </button>
+                    </li>
+                    <li>
+                        <button class="category-btn-mobile w-full text-left px-3 py-3 rounded-lg hover:bg-neutral-800 text-white" 
+                                data-category="gorros">
+                            🧢 Gorros
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="border-t border-neutral-800 my-4"></div>
+
+            <!-- Precio mobile -->
+            <div class="mb-6">
+                <h3 class="text-xs uppercase text-neutral-500 font-bold mb-3 tracking-wider">Precio</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 cursor-pointer text-white">
+                        <input type="radio" name="precio-mobile" value="all" checked class="accent-white">
+                        <span class="text-sm">Todos</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-white">
+                        <input type="radio" name="precio-mobile" value="0-25" class="accent-white">
+                        <span class="text-sm">Menos de $25</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-white">
+                        <input type="radio" name="precio-mobile" value="25-50" class="accent-white">
+                        <span class="text-sm">$25 - $50</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-white">
+                        <input type="radio" name="precio-mobile" value="50-100" class="accent-white">
+                        <span class="text-sm">$50 - $100</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-white">
+                        <input type="radio" name="precio-mobile" value="100+" class="accent-white">
+                        <span class="text-sm">Más de $100</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botón aplicar -->
+            <button id="aplicar-filtros" 
+                    class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-neutral-200 transition">
+                Ver resultados
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script src="js/config.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/productos.js"></script>
+
+</body>
+</html>

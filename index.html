@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiTienda - Inicio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                    50: '#f5f5f5',
+                    100: '#e5e5e5',
+                    200: '#d4d4d4',
+                    300: '#a3a3a3',
+                    400: '#737373',
+                    500: '#525252',
+                    600: '#404040',  // gris oscuro base
+                    700: '#262626',  // más oscuro
+                    800: '#171717',  // casi negro
+                    900: '#000000'   // negro puro
+                },
+                accent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-neutral-100 text-neutral-900">
+
+        <!-- ================= NAVBAR DESKTOP ================= -->
+    <nav id="navbar-scroll" 
+         class="hidden md:block fixed top-0 left-0 right-0 bg-black shadow-lg z-50 transform transition-transform duration-300 ease-in-out">
+        
+        <!-- Buscador centrado absoluto -->
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4">
+            <div class="relative">
+                <input type="text" 
+                       placeholder="Buscar productos..." 
+                       class="w-full pl-10 pr-4 py-2 bg-neutral-800 text-white placeholder-neutral-400 border border-neutral-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:border-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                     class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" 
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Contenedor flex normal -->
+        <div class="flex items-center justify-between px-6 py-3 relative">
+            
+            <!-- Botones de navegación (izquierda) -->
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <a href="index.html" 
+                   class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Inicio
+                </a>
+                <a href="productos.html" 
+                   class="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-600 text-white font-semibold transition whitespace-nowrap">
+                    Catálogo
+                </a>
+            </div>
+
+            <!-- Spacer invisible para que el carrito se mantenga a la derecha -->
+            <div class="w-10 flex-shrink-0"></div>
+
+                        <!-- Carrito (derecha) -->
+            <a href="carrito.html" class="relative p-2 bg-neutral-800 hover:bg-neutral-600 rounded-lg transition flex-shrink-0 block">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" 
+                     viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span id="cart-count-nav" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    0
+                </span>
+            </a>
+
+        </div>
+    </nav>
+
+
+        <!-- ================= HERO ================= -->
+    <section class="bg-black text-white relative min-h-[500px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
+        
+        <!-- Botón hamburguesa (solo mobile) -->
+        <button id="menu-toggle" 
+                class="md:hidden absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-2 rounded-lg transition z-50">
+            <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+            <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" 
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+
+        <!-- Contenido centrado -->
+        <div class="container mx-auto px-4 text-center relative z-10 py-16">
+
+            <!-- Logo como imagen responsive -->
+            <div class="flex justify-center mb-8">
+                <img src="assets/logo.png" 
+                     alt="MiTienda Logo"
+                     class="w-48 sm:w-56 md:w-72 lg:w-96 h-auto object-contain hover:scale-105 transition-transform duration-300">
+            </div>
+
+            <!-- Botón CTA -->
+            <a href="productos.html" 
+               class="inline-block bg-white hover:bg-neutral-200 text-black font-bold px-8 md:px-10 py-3 md:py-4 rounded-lg transition shadow-2xl tracking-wider uppercase text-xs md:text-sm">
+                Ver productos
+            </a>
+
+        </div>
+    </section>
+
+
+        <!-- ================= CATEGORÍAS (solo desktop) ================= -->
+    <section class="container mx-auto px-4 py-12 hidden md:block">
+        <h2 class="text-3xl font-bold mb-8">Categorías</h2>
+
+        <div class="grid grid-cols-3 lg:grid-cols-5 gap-4">
+            
+            <a href="productos.html?cat=remeras" class="bg-white rounded-lg shadow hover:shadow-lg transition p-6 text-center group">
+                <div class="text-5xl mb-3 group-hover:scale-110 transition">👕</div>
+                <h3 class="font-semibold">Remeras</h3>
+            </a>
+
+            <a href="productos.html?cat=championes" class="bg-white rounded-lg shadow hover:shadow-lg transition p-6 text-center group">
+                <div class="text-5xl mb-3 group-hover:scale-110 transition">👟</div>
+                <h3 class="font-semibold">Championes</h3>
+            </a>
+
+            <a href="productos.html?cat=buzos" class="bg-white rounded-lg shadow hover:shadow-lg transition p-6 text-center group">
+                <div class="text-5xl mb-3 group-hover:scale-110 transition">🧥</div>
+                <h3 class="font-semibold">Buzos</h3>
+            </a>
+
+            <a href="productos.html?cat=pantalones" class="bg-white rounded-lg shadow hover:shadow-lg transition p-6 text-center group">
+                <div class="text-5xl mb-3 group-hover:scale-110 transition">👖</div>
+                <h3 class="font-semibold">Pantalones</h3>
+            </a>
+
+            <a href="productos.html?cat=gorros" class="bg-white rounded-lg shadow hover:shadow-lg transition p-6 text-center group">
+                <div class="text-5xl mb-3 group-hover:scale-110 transition">🧢</div>
+                <h3 class="font-semibold">Gorros</h3>
+            </a>
+
+        </div>
+    </section>
+
+     <!-- ================= PRODUCTOS DESTACADOS ================= -->
+    <section id="productos" class="container mx-auto px-4 py-12">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold">Productos Destacados</h2>
+            <a href="productos.html" class="text-neutral-700 hover:text-black font-semibold">
+                Ver todos →
+            </a>
+        </div>
+
+        <!-- Loading -->
+        <div id="featured-loading" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-black"></div>
+        </div>
+
+        <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </section>
+
+        <!-- ================= BENEFICIOS ================= -->
+    <section class="bg-neutral-900 py-12 mt-8 text-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                
+                <div>
+                    <div class="text-5xl mb-3">🚚</div>
+                    <h3 class="font-bold text-lg mb-2">Envío Gratis</h3>
+                    <p class="text-neutral-400">En compras mayores a $50</p>
+                </div>
+
+                <div>
+                    <div class="text-5xl mb-3">🔒</div>
+                    <h3 class="font-bold text-lg mb-2">Pago Seguro</h3>
+                    <p class="text-neutral-400">Tus datos están protegidos</p>
+                </div>
+
+                <div>
+                    <div class="text-5xl mb-3">↩️</div>
+                    <h3 class="font-bold text-lg mb-2">Devolución Fácil</h3>
+                    <p class="text-neutral-400">30 días para devolver</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+
+           <!-- ================= DRAWER MOBILE ================= -->
+    <div id="drawer-overlay" 
+         class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity opacity-0"></div>
+
+    <div id="drawer" 
+         class="fixed top-0 right-0 h-full w-72 bg-neutral-900 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        
+        <!-- Header del drawer -->
+        <div class="bg-black text-white p-6 border-b border-neutral-800">
+            <h2 class="text-xl font-bold">Menú</h2>
+            <p class="text-sm text-neutral-400">Navegá por la tienda</p>
+        </div>
+
+        <!-- Categorías -->
+        <div class="p-4">
+            <h3 class="text-xs uppercase text-neutral-500 font-bold mb-3 tracking-wider">Categorías</h3>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-2xl">👕</span>
+                <span class="font-semibold text-white">Remeras</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-2xl">👟</span>
+                <span class="font-semibold text-white">Championes</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-2xl">🧥</span>
+                <span class="font-semibold text-white">Buzos</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-2xl">👖</span>
+                <span class="font-semibold text-white">Pantalones</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-2xl">🧢</span>
+                <span class="font-semibold text-white">Gorros</span>
+            </a>
+        </div>
+
+        <div class="border-t border-neutral-800 mx-4"></div>
+
+        <!-- Otros links -->
+        <div class="p-4">
+            <a href="/" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-xl">🏠</span>
+                <span class="font-semibold text-white">Inicio</span>
+            </a>
+            <a href="carrito.html" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-xl">🛒</span>
+                <span class="font-semibold text-white">Carrito</span>
+                <span id="cart-count-drawer" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">0</span>
+            </a>
+
+            <a href="#" class="flex items-center gap-3 px-3 py-3 hover:bg-neutral-700 rounded-lg transition">
+                <span class="text-xl">👤</span>
+                <span class="font-semibold text-white">Mi cuenta</span>
+            </a>
+        </div>
+
+    </div>
+
+    
+
+             <script>
+        const toggle = document.getElementById('menu-toggle');
+        const drawer = document.getElementById('drawer');
+        const overlay = document.getElementById('drawer-overlay');
+        const iconHamburger = document.getElementById('icon-hamburger');
+        const iconClose = document.getElementById('icon-close');
+
+        function openDrawer() {
+            drawer.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            iconHamburger.classList.add('hidden');
+            iconClose.classList.remove('hidden');
+        }
+
+        function closeDrawer() {
+            drawer.classList.add('translate-x-full');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+            iconHamburger.classList.remove('hidden');
+            iconClose.classList.add('hidden');
+        }
+
+        toggle.addEventListener('click', () => {
+            if (drawer.classList.contains('translate-x-full')) {
+                openDrawer();
+            } else {
+                closeDrawer();
+            }
+        });
+
+        // Cerrar al hacer click en el overlay
+        overlay.addEventListener('click', closeDrawer);
+
+        // Cerrar con tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDrawer();
+        });
+    </script>
+
+        <script>
+        // Navbar inteligente: aparece al subir, se oculta al bajar
+        const navbar = document.getElementById('navbar-scroll');
+        let lastScroll = 0;
+        const scrollThreshold = 10; // px mínimos para considerar scroll
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            // Ignorar scrolls muy pequeños
+            if (Math.abs(currentScroll - lastScroll) < scrollThreshold) return;
+            
+            // Si bajamos → ocultar navbar
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                navbar.classList.add('-translate-y-full');
+            } 
+            // Si subimos → mostrar navbar
+            else if (currentScroll < lastScroll) {
+                navbar.classList.remove('-translate-y-full');
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+
+
+    <script src="js/config.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/index.js"></script>
+
+</body>
+</html>
