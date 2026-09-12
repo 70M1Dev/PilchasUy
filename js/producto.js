@@ -2,18 +2,6 @@
 // DATOS: se cargan desde WooCommerce en loadProduct()
 // ==========================================
 
-// Respaldo por si la API falla, para no dejar la pantalla rota
-const FALLBACK_PRODUCT = {
-    id: 1,
-    name: "Producto no disponible (demo)",
-    price: 0,
-    category: "remeras",
-    description: "No se pudo cargar este producto desde WooCommerce.",
-    images: ["https://placehold.co/600x700/cccccc/666666?text=Sin+imagen"],
-    sizes: [],
-    badge: null
-};
-
 // Convierte un producto de WooCommerce al formato que usa esta página
 function mapWCProductDetail(p) {
     const price = parseFloat(p.price || p.regular_price || 0);
@@ -103,24 +91,27 @@ async function loadProduct() {
     const id = parseInt(getURLParam('id')) || 1;
 
     try {
+        if (wcBackendMissing()) throw new Error('PROXY_URL sin configurar');
         currentProduct = await fetchProductById(id);
     } catch (err) {
-        console.error('Error trayendo el producto de WooCommerce:', err);
-        currentProduct = FALLBACK_PRODUCT;
+        // Sin producto no hay nada que renderizar: mostramos el estado de error
+        // en lugar de una ficha vacía con precio $0.
+        wcRenderError('product-detail', err);
+        return;
     }
 
     // Actualizar info básica
     document.getElementById('product-name').textContent = currentProduct.name;
     document.getElementById('product-category').textContent = getCategoryName(currentProduct.category);
     document.getElementById('breadcrumb-category').textContent = getCategoryName(currentProduct.category);
-    document.getElementById('product-price').textContent = `$${currentProduct.price}`;
-    document.getElementById('product-installment').textContent = (currentProduct.price / 3).toFixed(2);
+    document.getElementById('product-price').textContent = wcPrice(currentProduct.price);
+    document.getElementById('product-installment').textContent = wcPrice(currentProduct.price / 3);
     // La descripción de WooCommerce trae HTML (párrafos, etc.)
     document.getElementById('product-description').innerHTML = currentProduct.description;
 
     // Precio original y descuento
     if (currentProduct.originalPrice) {
-        document.getElementById('product-original-price').textContent = `$${currentProduct.originalPrice}`;
+        document.getElementById('product-original-price').textContent = wcPrice(currentProduct.originalPrice);
         document.getElementById('product-original-price').classList.remove('hidden');
         const discount = Math.round((1 - currentProduct.price / currentProduct.originalPrice) * 100);
         document.getElementById('product-discount').textContent = `-${discount}%`;
@@ -340,7 +331,7 @@ async function renderRelated() {
             </div>
             <div class="p-3">
                 <h4 class="font-semibold text-sm line-clamp-2 mb-1">${p.name}</h4>
-                <p class="font-bold text-black">$${p.price}</p>
+                <p class="font-bold text-black">${wcPrice(p.price)}</p>
             </div>
         </a>
     `).join('');

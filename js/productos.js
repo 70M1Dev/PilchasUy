@@ -5,11 +5,9 @@
 // ==========================================
 let productsData = [];
 
-// Respaldo por si la API falla (solo para no dejar la página en blanco
-// mientras depuramos la conexión). Podés borrar esto más adelante.
-const FALLBACK_DATA = [
-    { id: 1, name: "Camiseta Premium Algodón (demo)", price: 19.99, originalPrice: 24.99, category: "remeras", image: "https://via.placeholder.com/300x350/404040/ffffff?text=Demo", badge: "-20%" },
-];
+// Guarda el error de la API para mostrar el estado correcto en pantalla
+// (un cliente real no tiene que ver productos "demo" inventados).
+let productsLoadError = null;
 
 // ==========================================
 // WOOCOMMERCE: TRAER PRODUCTOS
@@ -47,7 +45,10 @@ function mapWCProduct(p) {
 }
 
 async function fetchProductsFromWC() {
+    productsLoadError = null;
     try {
+        if (wcBackendMissing()) throw new Error('PROXY_URL sin configurar');
+
         const url = wcApiUrl('products', { per_page: 100, status: 'publish' });
         const res = await fetch(url);
 
@@ -59,9 +60,8 @@ async function fetchProductsFromWC() {
         const data = await res.json();
         productsData = data.map(mapWCProduct);
     } catch (err) {
-        console.error('Error trayendo productos de WooCommerce:', err);
-        console.warn('Usando datos de respaldo (FALLBACK_DATA).');
-        productsData = FALLBACK_DATA;
+        productsData = [];
+        productsLoadError = err;
     }
 }
 
@@ -143,6 +143,15 @@ function renderProducts() {
     setTimeout(() => {
         loading.classList.add('hidden');
 
+        // Si la API falló, mostramos el estado de error en vez de
+        // "no se encontraron productos", que confundiría al cliente.
+        if (productsLoadError) {
+            noResults.classList.add('hidden');
+            countEl.textContent = '';
+            wcRenderError('products-grid', productsLoadError);
+            return;
+        }
+
         if (filtered.length === 0) {
             grid.innerHTML = '';
             noResults.classList.remove('hidden');
@@ -170,8 +179,8 @@ function renderProducts() {
                         <p class="text-xs text-neutral-500 uppercase mb-1">${getCategoryName(product.category)}</p>
                         <h3 class="font-semibold text-lg mb-2 line-clamp-2 text-black">${product.name}</h3>
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="text-2xl font-bold text-black">$${product.price}</span>
-                            ${product.originalPrice ? `<span class="text-sm text-neutral-400 line-through">$${product.originalPrice}</span>` : ''}
+                            <span class="text-2xl font-bold text-black">${wcPrice(product.price)}</span>
+                            ${product.originalPrice ? `<span class="text-sm text-neutral-400 line-through">${wcPrice(product.originalPrice)}</span>` : ''}
                         </div>
                     </div>
                 </a>

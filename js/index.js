@@ -2,10 +2,6 @@
 // PRODUCTOS DESTACADOS (HOME) - WooCommerce
 // ==========================================
 
-const FALLBACK_FEATURED = [
-    { id: 0, name: "Producto no disponible (demo)", price: 0, category: "remeras", image: "https://placehold.co/300x250/cccccc/666666?text=Sin+imagen", badge: null }
-];
-
 function getCategoryNameHome(cat) {
     const names = { remeras: 'Remeras', championes: 'Championes', buzos: 'Buzos', pantalones: 'Pantalones', gorros: 'Gorros' };
     return names[cat] || cat;
@@ -38,27 +34,25 @@ function mapWCProductHome(p) {
     };
 }
 
+// Lanza si la API no responde. El caller muestra el estado de error.
 async function fetchFeaturedProducts() {
-    try {
-        // Primero intentamos con productos marcados como "Destacado" en WooCommerce
-        let url = wcApiUrl('products', { featured: true, per_page: 4, status: 'publish' });
-        let res = await fetch(url);
+    if (wcBackendMissing()) throw new Error('PROXY_URL sin configurar');
+
+    // Primero intentamos con productos marcados como "Destacado" en WooCommerce
+    let url = wcApiUrl('products', { featured: true, per_page: 4, status: 'publish' });
+    let res = await fetch(url);
+    if (!res.ok) throw new Error(`WooCommerce API respondió ${res.status}`);
+    let data = await res.json();
+
+    // Si no marcaste ningún producto como destacado, mostramos los últimos publicados
+    if (!data.length) {
+        url = wcApiUrl('products', { per_page: 4, orderby: 'date', order: 'desc', status: 'publish' });
+        res = await fetch(url);
         if (!res.ok) throw new Error(`WooCommerce API respondió ${res.status}`);
-        let data = await res.json();
-
-        // Si no marcaste ningún producto como destacado, mostramos los últimos publicados
-        if (!data.length) {
-            url = wcApiUrl('products', { per_page: 4, orderby: 'date', order: 'desc', status: 'publish' });
-            res = await fetch(url);
-            if (!res.ok) throw new Error(`WooCommerce API respondió ${res.status}`);
-            data = await res.json();
-        }
-
-        return data.map(mapWCProductHome);
-    } catch (err) {
-        console.error('Error trayendo productos destacados de WooCommerce:', err);
-        return FALLBACK_FEATURED;
+        data = await res.json();
     }
+
+    return data.map(mapWCProductHome);
 }
 
 let featuredProductsData = [];
@@ -85,8 +79,8 @@ function renderFeaturedProducts(products) {
                     <p class="text-xs text-neutral-500 uppercase mb-1">${getCategoryNameHome(product.category)}</p>
                     <h3 class="font-semibold text-lg mb-2 line-clamp-2 text-black">${product.name}</h3>
                     <div class="flex items-center gap-2 mb-3">
-                        <span class="text-2xl font-bold text-black">$${product.price}</span>
-                        ${product.originalPrice ? `<span class="text-sm text-neutral-400 line-through">$${product.originalPrice}</span>` : ''}
+                        <span class="text-2xl font-bold text-black">${wcPrice(product.price)}</span>
+                        ${product.originalPrice ? `<span class="text-sm text-neutral-400 line-through">${wcPrice(product.originalPrice)}</span>` : ''}
                     </div>
                 </div>
             </a>
@@ -112,8 +106,14 @@ function handleAddToCartHome(productId) {
 }
 
 async function initFeaturedProducts() {
-    featuredProductsData = await fetchFeaturedProducts();
-    renderFeaturedProducts(featuredProductsData);
+    try {
+        featuredProductsData = await fetchFeaturedProducts();
+        renderFeaturedProducts(featuredProductsData);
+    } catch (err) {
+        const loading = document.getElementById('featured-loading');
+        if (loading) loading.classList.add('hidden');
+        wcRenderError('featured-products', err);
+    }
 }
 
 initFeaturedProducts();

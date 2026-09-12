@@ -71,8 +71,8 @@ function renderCart() {
                         <button onclick="updateQty(${index}, 1)" class="w-8 h-8 bg-neutral-200 hover:bg-neutral-300 rounded-lg font-bold transition">+</button>
                     </div>
                     <div class="text-right">
-                        <p class="font-bold text-lg">$${(item.price * item.quantity).toFixed(2)}</p>
-                        <p class="text-xs text-neutral-500">$${item.price} c/u</p>
+                        <p class="font-bold text-lg">${wcPrice(item.price * item.quantity)}</p>
+                        <p class="text-xs text-neutral-500">${wcPrice(item.price)} c/u</p>
                     </div>
                 </div>
             </div>
@@ -105,15 +105,15 @@ function updateTotals() {
     const discount = getDiscount(subtotal);
     const total = subtotal + shipping - discount;
 
-    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('shipping').textContent = shipping === 0 ? 'Gratis' : `$${shipping.toFixed(2)}`;
+    document.getElementById('subtotal').textContent = wcPrice(subtotal);
+    document.getElementById('shipping').textContent = shipping === 0 ? 'Gratis' : wcPrice(shipping);
     document.getElementById('shipping').className = `font-semibold ${shipping === 0 ? 'text-green-600' : ''}`;
-    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('total').textContent = wcPrice(total);
 
     const discountRow = document.getElementById('discount-row');
     if (discount > 0) {
         discountRow.classList.remove('hidden');
-        document.getElementById('discount').textContent = `-$${discount.toFixed(2)}`;
+        document.getElementById('discount').textContent = `-${wcPrice(discount)}`;
     } else {
         discountRow.classList.add('hidden');
     }

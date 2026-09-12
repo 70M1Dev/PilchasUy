@@ -29,7 +29,7 @@ function renderSummary() {
                 <p class="font-semibold text-sm line-clamp-2">${item.name}</p>
                 <p class="text-xs text-neutral-500">${item.size ? 'Talle: ' + item.size + ' · ' : ''}Cant: ${item.quantity}</p>
             </div>
-            <p class="font-bold text-sm whitespace-nowrap">$${(item.price * item.quantity).toFixed(2)}</p>
+            <p class="font-bold text-sm whitespace-nowrap">${wcPrice(item.price * item.quantity)}</p>
         </div>
     `).join('');
 
@@ -38,14 +38,14 @@ function renderSummary() {
     const discount = getDiscount(subtotal);
     const total = subtotal + shipping - discount;
 
-    document.getElementById('checkout-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'Gratis' : `$${shipping.toFixed(2)}`;
-    document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('checkout-subtotal').textContent = wcPrice(subtotal);
+    document.getElementById('checkout-shipping').textContent = shipping === 0 ? 'Gratis' : wcPrice(shipping);
+    document.getElementById('checkout-total').textContent = wcPrice(total);
 
     const discountRow = document.getElementById('checkout-discount-row');
     if (discount > 0) {
         discountRow.classList.remove('hidden');
-        document.getElementById('checkout-discount').textContent = `-$${discount.toFixed(2)}`;
+        document.getElementById('checkout-discount').textContent = `-${wcPrice(discount)}`;
     }
 }
 
