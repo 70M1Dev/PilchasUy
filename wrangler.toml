@@ -1,0 +1,11 @@
+# Cloudflare Worker — WooCommerce API Proxy
+name = "pilchasuy-wc-proxy"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Variables de entorno (secrets) — configurar con:
+#   wrangler secret put WC_BASE_URL
+#   wrangler secret put WC_CONSUMER_KEY
+#   wrangler secret put WC_CONSUMER_SECRET
+[vars]
+# No secrets here — they go in Cloudflare's encrypted storage

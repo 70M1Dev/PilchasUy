@@ -1,5 +1,5 @@
-# Configuración local (contiene credenciales reales)
-js/config.js
+# Configuración local (sobrescribe para desarrollo — contiene credenciales)
+js/config.local.js
 
 # WordPress / WooCommerce
 *.log

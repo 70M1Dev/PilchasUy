@@ -1,113 +1,125 @@
-# MiTienda — Tienda Online con WooCommerce
+# PilchasUy — Tienda Online con WooCommerce
 
 Frontend estático (HTML + Tailwind CSS) que consume la **WooCommerce REST API** para mostrar productos, carrito y checkout.
 
 ## 🏗️ Arquitectura
 
 ```
-index.html          ← Home con productos destacados
-productos.html      ← Catálogo con filtros (categoría, precio, búsqueda, orden)
-producto.html       ← Detalle de producto con galería + talles
-carrito.html        ← Carrito con cupones (localStorage)
-checkout.html       ← Formulario de checkout
-assets/logo.png     ← Logo
+Navegador
+   │
+   ├── GitHub Pages ──────────► HTML/CSS/JS estático (este repo)
+   │
+   └── Cloudflare Worker ─────► WordPress + WooCommerce
+       (agrega las API keys)     (/wp-json/wc/v3/…)
+```
+
+El frontend **nunca** ve las credenciales de WooCommerce: le pega al Worker,
+y el Worker las agrega del lado del servidor.
+
+```
+index.html               ← Home con productos destacados
+productos.html           ← Catálogo con filtros (categoría, precio, búsqueda, orden)
+producto.html            ← Detalle de producto con galería + talles
+carrito.html             ← Carrito con cupones (localStorage)
+checkout.html            ← Formulario de checkout
+assets/logo.png          ← Logo
+worker.js                ← Cloudflare Worker (proxy de la API)
+wrangler.toml            ← Config de deploy del Worker
 js/
-├── config.js       ← [GITIGNORED] Configuración con credenciales reales
-├── config.example.js ← Template de config.js (seguro para el repo)
-├── cart.js         ← Carrito compartido (localStorage)
-    ├── index.js        ← Carga productos destacados
-    ├── productos.js     ← Lista con filtros
-    ├── producto.js      ← Detalle + productos relacionados
-    └── checkout.js      ← Formulario de checkout (simulado)
+├── config.js            ← Config de producción (pública, sin secretos)
+├── config.local.example.js ← Template para desarrollo local
+├── config.local.js      ← [GITIGNORED] Keys reales para desarrollo
+├── cart.js              ← Carrito compartido (localStorage)
+├── index.js             ← Carga productos destacados
+├── productos.js         ← Lista con filtros
+├── producto.js          ← Detalle + productos relacionados
+├── carrito.js           ← Carrito + cupones
+└── checkout.js          ← Formulario de checkout (simulado)
 ```
 
-## 🚀 Setup rápido
+## 🖥️ Desarrollo local
 
-### 1. Clonar e instalar
+1. Levantá el sitio de WordPress en **LocalWP** (`pilchasuyy.local`).
+2. En WordPress: **WooCommerce → Ajustes → Avanzado → REST API** → crear una clave
+   con permisos de **Lectura**.
+3. Copiá el template y pegá tus keys:
 
-```bash
-git clone https://github.com/tu-usuario/tu-repo.git
-cd tu-repo
-```
+   ```bash
+   cp js/config.local.example.js js/config.local.js
+   ```
 
-> No se necesita instalar dependencias. Es puro HTML/CSS/JS.
+4. Abrí `index.html` con Live Server (o cualquier servidor local).
 
-### 2. Configurar WooCommerce
+`js/config.local.js` solo se carga cuando el sitio corre en `localhost`, `127.0.0.1`
+o un dominio `.local` (ver el bloque de override en `js/config.js`). En producción
+ni se pide, así que no ensucia la consola con un 404.
 
-1. En tu WordPress con WooCommerce, ve a **WooCommerce → Ajustes → Avanzado → REST API**.
-2. Crea una **Clave de API**:
-   - Descripción: `MiTienda Frontend`
-   - Usuario: tu usuario admin
-   - Permisos: **Lectura** (Read)
-3. Copia el **Consumer Key** y **Consumer Secret**.
-4. Asegúrate de que tu sitio tenga **CORS habilitado** para recibir requests desde tu dominio (o `localhost` en desarrollo).
+### CORS en el WordPress local
 
-### 3. Crear el config local
-
-```bash
-# Copia el template y reemplazá los valores
-cp js/config.example.js js/config.js
-```
-
-Editá `js/config.js`:
-
-```javascript
-const WC_CONFIG = {
-    URL: 'https://tu-tienda.com',          // ← tu dominio WordPress
-    CONSUMER_KEY: 'ck_tu_key',              // ← tu Consumer Key
-    CONSUMER_SECRET: 'cs_tu_secret'         // ← tu Consumer Secret
-};
-```
-
-> ⚠️ **Nunca** subas `js/config.js` a GitHub. Está en `.gitignore`.
-
-### 4. Probar localmente
-
-Abrí `index.html` con Live Server en VS Code (o cualquier servidor local). El sitio hará requests directos a tu WooCommerce.
-
-## 🌐 Deploy a GitHub Pages
-
-### Opción A: GitHub Pages (estático, recomendado)
-
-```bash
-git init
-git add -A
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/tu-usuario/tu-repo.git
-git push -u origin main
-```
-
-Luego en GitHub → Settings → Pages → seleccioná `main` branch → ¡listo!
-
-### 🔒 Consideraciones de seguridad en producción
-
-El frontend estático expone las API keys en el cliente. Si vas a producción:
-
-1. **Regenerá las keys** de WooCommerce (las que usaste localmente no deben quedar públicas).
-2. **Usá un proxy inverso** (Cloudflare Workers, Vercel Edge Functions, etc.) para ocultar las keys. El frontend llama a tu proxy, y el proxy reenvía a WooCommerce.
-
-### 🔧 CORS en WordPress
-
-Si tu tienda está en otro dominio, agregá esto a `functions.php` o un plugin:
+Si el frontend corre en otro puerto que WordPress, agregá esto a `functions.php`
+del tema (o a un plugin tipo *Code Snippets*):
 
 ```php
 add_action('rest_api_init', function () {
     remove_filter('rest_pre_serve_request', 'rest_send_headers');
     add_filter('rest_pre_serve_request', function ($value) {
         header('Access-Control-Allow-Origin: *');
-        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        header('Access-Control-Allow-Credentials: false');
+        header('Access-Control-Allow-Methods: GET, OPTIONS');
         return $value;
     });
 }, 1);
 ```
 
-## 🛠️ Development
+En producción esto **no hace falta**: el Worker ya devuelve los headers de CORS.
+
+## 🌐 Deploy
+
+### 1. Frontend → GitHub Pages
+
+El repo publica desde la rama `main`, carpeta raíz.
+En GitHub: **Settings → Pages → Source: Deploy from a branch → `main` / `/ (root)`**.
+
+Cada `git push` a `main` republica el sitio.
+
+### 2. Proxy de la API → Cloudflare Workers
 
 ```bash
-# Simplemente abrí index.html con Live Server
-code .
+npm install -g wrangler
+wrangler login
+wrangler secret put WC_BASE_URL          # ej: https://tienda.pilchasuy.com.uy
+wrangler secret put WC_CONSUMER_KEY      # ck_…
+wrangler secret put WC_CONSUMER_SECRET   # cs_…
+wrangler secret put ALLOWED_ORIGINS      # ej: https://70m1dev.github.io,https://pilchasuy.com.uy
+wrangler deploy
 ```
 
-El carrito funciona con `localStorage`, por lo que no necesitas backend para el flujo de compra. El checkout está simulado — para enviar órdenes reales a WooCommerce, implementá la integración en `checkout.js`.
+Después de deployar, poné la URL del Worker en `PROXY_URL` dentro de `js/config.js`
+y hacé push.
+
+El Worker:
+
+- solo acepta `GET`;
+- solo deja pasar `/products`, `/products/{id}` y `/products/categories`
+  (nadie puede leer órdenes ni clientes a través del proxy);
+- ignora `consumer_key` / `consumer_secret` que mande el cliente;
+- cachea 5 minutos en el edge;
+- responde CORS solo a los orígenes de `ALLOWED_ORIGINS`.
+
+### 3. WordPress
+
+WordPress **no** va en GitHub Pages — necesita PHP y MySQL, así que vive en un
+hosting aparte. El frontend solo le habla por la REST API a través del Worker.
+
+## 🔒 Seguridad
+
+- Las keys de WooCommerce viven únicamente como **secrets de Cloudflare**.
+- `js/config.local.js` está en `.gitignore`; si alguna vez se subió una key, hay
+  que **regenerarla** desde WooCommerce, no alcanza con borrar el archivo.
+- Usá una clave de API con permisos de **solo lectura**.
+
+## 🛒 Estado del checkout
+
+El carrito funciona con `localStorage`. El checkout está **simulado**: valida el
+formulario y muestra la confirmación, pero todavía no crea la orden en WooCommerce.
+Para hacerlo real hace falta un endpoint `POST /orders`, que requiere una clave de
+escritura y por lo tanto tiene que resolverse dentro del Worker (no desde el navegador).
